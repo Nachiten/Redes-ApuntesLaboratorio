@@ -1,27 +1,28 @@
 # Tutorial Packet Tracer
 
 ## Utilidades
-| Comando | Funcion |
-|---------|---------|
-Control + Shift + 6 | Parar proceso corriendo 
-Control + z         | Volver atras
-Shift + Insert      | Pegar texto copiado
-Tab                 | Autocompletar entrada
-Flecha Arriba       | Reinsertar comando anteriores
-?                   | Obtener documentacion sobre un comando o parametro
-exit                | Salir del modo actual, volver al anterior
+| Comando             | Funcion                                            |
+|---------------------|----------------------------------------------------|
+| Control + Shift + 6 | Parar proceso corriendo                            |
+| Control + z         | Volver atras                                       |
+| Shift + Insert      | Pegar texto copiado                                |
+| Tab                 | Autocompletar entrada                              |
+| Flecha Arriba       | Reinsertar comando anteriores                      |
+| ?                   | Obtener documentacion sobre un comando o parametro |
+| exit                | Salir del modo actual, volver al anterior          |
 
 ## Modos
-*Nota: Los modos (en general) van de menor a mayor permisos, y de menor a mayor especificidad*
+*Nota: Los modos (en general) van de menor a mayor permisos, y de menor a mayor especificidad.*
 
-|Modo | Funcion | Comando para ingresar |
-|-----|---------|-----------------------|
-[U] \> Usuario                  | A penas entras, default | -
-[P] # Privilegiado                | Modo privilegiado | enable
-[CG] (config) Configuracion Global       | Configuracion general  | configure terminal
-[CE] (config-X) Configuracion Especifica   | Configuraciones especificas | interface \<interfaz\>, entre otros
+| Modo                                     | Funcion                     | Comando para ingresar               |
+|------------------------------------------|-----------------------------|-------------------------------------|
+| [U] \> Usuario                           | A penas entras, default     | -                                   |
+| [P] # Privilegiado                       | Modo privilegiado           | enable                              |
+| [CG] (config) Configuracion Global       | Configuracion general       | configure terminal                  |
+| [CE] (config-X) Configuracion Especifica | Configuraciones especificas | interface \<interfaz\>, entre otros |
 
 ## Output de "show interfaces"
+*Nota: show interface <interfaz> para ver solo una interfaz.*
 |Output | Explicacion |
 |-------|-------------|
 Interface is up                    | Está habilitado y tiene algo conectado
@@ -65,13 +66,13 @@ interface range f0/4-24
 ```
 
 ### Seguridad de interfaz
-| Comando  | Explicación |
-|----------|-------------|
-[Interfaz] switchport mode access  | Configurar puerto en modo acceso 
-switchport port-security                     | Activar la seguridad del puerto 
-switchport port-security maximum 1           | Numero maximo de MAC 
-switchport port-security mac-address \<mac\> | Asignar de MAC permitida 
-switchport port-security violation shutdown  | Establecer accion ante violacion. En este caso apagar puerto 
+| Comando                                      | Explicación                                                  |
+|----------------------------------------------|--------------------------------------------------------------|
+| [Interfaz] switchport mode access            | Configurar puerto en modo acceso                             |
+| switchport port-security                     | Activar la seguridad del puerto                              |
+| switchport port-security maximum 1           | Numero maximo de MAC                                         |
+| switchport port-security mac-address \<mac\> | Asignar de MAC permitida                                     |
+| switchport port-security violation shutdown  | Establecer accion ante violacion. En este caso apagar puerto |
 
 ### IP administrativa
 ```
@@ -81,13 +82,13 @@ no shutdown
 ```
 
 ### Interfaz serial
-| Comando  | Explicación |
-|----------|-------------|
-[CG] interface serial 0/0 | Ingresar a interfaz
-encapsulation ppp         | Configurar protocolo de encapsulacion
-ip address <IP> <máscara> | Configurar IP y mascara
-clock rate 2000000        | Velocidad de reloj (SOLO en extremo DCE, icono relojito)
-no shutdown               | Encender interfaz
+| Comando                   | Explicación                                              |
+|---------------------------|----------------------------------------------------------|
+| [CG] interface serial 0/0 | Ingresar a interfaz                                      |
+| encapsulation ppp         | Configurar protocolo de encapsulacion                    |
+| ip address <IP> <máscara> | Configurar IP y mascara                                  |
+| clock rate 2000000        | Velocidad de reloj (SOLO en extremo DCE, icono relojito) |
+| no shutdown               | Encender interfaz                                        |
 
 ### VLANs
 *Notas:*
@@ -117,15 +118,15 @@ name <nombre>
 
 Primero activar acceso SSH en VTY 0.
 
-| Comando | Explicacion |
-|---------|-------------|
-[CG] ip domain-name dominio.com                     | Configurar nombre de dominio
-crypto key generate rsa                             | Generar claves RSA (Se debe usar 1024, no el default)
-ip ssh version 2                                    | Configurar versión de SSH
-line vty 0                                          | Configurar terminal virtual (VTY) 0
-transport input ssh                                 | Configurar acceso SSH
-login local                                         | Configurar autenticacion
-username \<user\> privilege 15 password \<pass\>    | Especificar user y pass
+| Comando                                          | Explicacion                                           |
+|--------------------------------------------------|-------------------------------------------------------|
+| [CG] ip domain-name dominio.com                  | Configurar nombre de dominio                          |
+| crypto key generate rsa                          | Generar claves RSA (Se debe usar 1024, no el default) |
+| ip ssh version 2                                 | Configurar versión de SSH                             |
+| line vty 0                                       | Configurar terminal virtual (VTY) 0                   |
+| transport input ssh                              | Configurar acceso SSH                                 |
+| login local                                      | Configurar autenticacion                              |
+| username \<user\> privilege 15 password \<pass\> | Especificar user y pass                               |
 
 Por ultimo desactivar acceso en el resto de VTY.
 | Comando | Explicacion |
@@ -134,12 +135,12 @@ line vty 1 15         | Configurar VTY 1 a 15
 transport input none  | Deshabilitar acceso remoto
 
 ### Acceso remoto TELNET
-| Comando | Explicación |
-|---------|-------------|
-line vty 0 1                 | Configurar VTY 0 y 1
-login                        | Configurar autenticación
-password \<contra\>          | Establecer contraseña
-exec-timeout \<minutos\>     | Timeout antes de terminar sesion
+| Comando                  | Explicación                      |
+|--------------------------|----------------------------------|
+| line vty 0 1             | Configurar VTY 0 y               |
+| login                    | Configurar autenticación         |
+| password \<contra\>      | Establecer contraseña            |
+| exec-timeout \<minutos\> | Timeout antes de terminar sesion |
 
 ### Spanning tree
 Configurar este switch como root.
@@ -157,13 +158,13 @@ channel-protocol LACP
 ```
 
 ### Protocolo RIP
-| Comando         | Descripción                                      |
-|-----------------|--------------------------------------------------|
-router rip        | Entra al modo de configuración del router para RIP      
-version 2         | Establece la versión de RIP en 2 
-network w.x.y.z   | Especifica una red para incluirla en la tabla 
+| Comando         | Descripción                                        |
+|-----------------|----------------------------------------------------|
+| router rip      | Entra al modo de configuración del router para RIP |
+| version 2       | Version de RIP                                     |
+| network w.x.y.z | Especifica una red para incluirla en la tabla      |
 
-*Nota: Las network deben estar en ip CLASSFULL. Es decir, la direccion de red (no subred) con la mascara default.*
+*Nota: Las network deben estar en ip **CLASSFULL**. Es decir, la direccion de red (no subred) con la mascara default.*
 
 #### Evitar la publicacion de RIP en una interfaz
 ```
@@ -212,8 +213,7 @@ direccion:
 - out: Paquetes que salen
 
 
-
-### TODO - Revisar TP 3 desde pagina 6 inclusive y TP4
+### TODO - Revisar TP 3 desde página 6 inclusive y TP4
 
 ## TODO
 - IpSec
