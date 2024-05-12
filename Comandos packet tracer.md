@@ -1,7 +1,7 @@
 # Tutorial Packet Tracer
 
 ## Utilidades
-| Comando             | Funcion                                            |
+| Comando             | Función                                            |
 |---------------------|----------------------------------------------------|
 | Control + Shift + 6 | Parar proceso corriendo                            |
 | Control + z         | Volver atras                                       |
@@ -14,7 +14,7 @@
 ## Modos
 *Nota: Los modos (en general) van de menor a mayor permisos, y de menor a mayor especificidad.*
 
-| Modo                                     | Funcion                     | Comando para ingresar               |
+| Modo                                     | Función                     | Para ingresar                       |
 |------------------------------------------|-----------------------------|-------------------------------------|
 | [U] \> Usuario                           | A penas entras, default     | -                                   |
 | [P] # Privilegiado                       | Modo privilegiado           | enable                              |
@@ -24,11 +24,11 @@
 ## Output de "show interfaces"
 *Nota: show interface <interfaz> para ver solo una interfaz.*
 
-| Output                             | Explicacion                                                                                                                                        |
-|------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
-| Interface is up                    | Está habilitado y tiene algo conectado                                                                                                             |
-| Interface is down                  | Está habilitado y no tiene algo conectado                                                                                                          |
-| Interface is administratively down | Deshabilitado. No se puede usar hasta que se habilite manualmente. Se pasa a este estado ante una violacion de seguridad donde se indique shutdown |
+| Output                             | Explicación                                                        |
+|------------------------------------|--------------------------------------------------------------------|
+| Interface is up                    | Está habilitado y tiene algo conectado                             |
+| Interface is down                  | Está habilitado y no tiene algo conectado                          |
+| Interface is administratively down | Deshabilitado. No se puede usar hasta que se habilite manualmente. |
 
 ## Configuraciones
 
@@ -75,6 +75,8 @@ interface range f0/4-24
 | switchport port-security mac-address \<mac\> | Asignar de MAC permitida                                     |
 | switchport port-security violation shutdown  | Establecer accion ante violacion. En este caso apagar puerto |
 
+*Nota: Al hacer shutdown por una violation se pasa el puerto al estado administratively down.*
+
 ### IP administrativa
 ```
 [CG] interface vlan 1
@@ -118,7 +120,7 @@ name <nombre>
 
 Primero activar acceso SSH en VTY 0.
 
-| Comando                                          | Explicacion                                           |
+| Comando                                          | Explicación                                           |
 |--------------------------------------------------|-------------------------------------------------------|
 | [CG] ip domain-name dominio.com                  | Configurar nombre de dominio                          |
 | crypto key generate rsa                          | Generar claves RSA (Se debe usar 1024, no el default) |
@@ -130,7 +132,7 @@ Primero activar acceso SSH en VTY 0.
 
 Por ultimo desactivar acceso en el resto de VTY.
 
-| Comando              | Explicacion                |
+| Comando              | Explicación                |
 |----------------------|----------------------------|
 | line vty 1 15        | Configurar VTY 1 a 15      |
 | transport input none | Deshabilitar acceso remoto |
@@ -175,24 +177,24 @@ channel-protocol LACP
 
 #### Establecer rutas sumarizadas CIDR
 ```
-ip route <prefijo> <mascara> <interfaz>
+[CG] ip route <prefijo> <mascara> <interfaz>
 ```
 Publico este prefijo, donde si una IP tiene el mismo prefijo, que me la manden porque ya la manejo.
 
 #### Redistribuir rutas estaticas en el procotolo de ip dinamica
 ```
-redistribute static
+[Router rip] redistribute static
 ```
 
 ### Lista de acceso
 
-### Entrenar el patoba (crear la acess list)
+### Crear la acess list (Entrenar el patoba)
 ```
 [CG] access-list <numAccessList> <action> <ip> <wildcard> | Estandar
 [CG] access-list <numAccessList> <action> <ipOrigen> <wildcardOrigen> <ipDestino> <wildcardDestino> | Extendida
 ```
 
-TODO: googlear en que orden se establecen las access list al poner varias
+TODO: Googlear en que orden se establecen las access list al poner varias
 
 numAccessList: Identificador de la access list 
 - 1-99 Estandar
@@ -205,7 +207,7 @@ action:
 ip: La ip a matchear con el wildcard
 wildcard: Los bits que esten en las mismas posiones a los 0 de la wildcard, deben coincidir con esa misma posicion de la ip.
 
-#### Poner el patoba a laburar (Activar la access list en una interfaz)
+#### Activar la access list en una interfaz (Poner al patoba a laburar)
 ```
 [Interfaz] ip access-group <numAccessList> <direccion>
 ```
@@ -215,8 +217,53 @@ direccion:
 - out: Paquetes que salen
 
 
-### TODO - Revisar TP 3 desde página 6 inclusive y TP4
+### Tunel IPsec
 
-## TODO
-- IpSec
-- 
+#### Configuración de VPN
+
+| Comando                      | Descripción                                          |
+|------------------------------|------------------------------------------------------|
+| [CG] crypto isakmp policy 10 | Configurar política de encriptación                  |
+| encr AES                     | Algoritmo de encriptacion                            |
+| authentication pre-share     | Metodo de autenticacion. Clave pre-compartida        |
+| group 5                      | Grupo de Diffie-Helulman. Grpo 5, clave de 1536 bits |
+| lifetime 900                 | Tiempo de vida de la clave (segundos)                |
+
+#### Definicion de clave simetrica con el otro extremo
+```
+crypto isakmp key <clave> address <ip>
+```
+Clave: Clave pre-compartida
+IP: IP del otro extremo
+
+#### Configuracion de IPSec modo tunel
+```
+crypto ipsec transform-set 50 ah-sha-hmac esp-3des
+```
+transform-set 50: Crea un mapa de transformacion llamado 50.
+ah-sha-hmac: Algoritmo de autenticacion
+esp-3des: Algoritmo de encriptacion
+
+#### Configurar lista de acceso
+Nota: Esta lista de acceso determina que trafico se va a encriptar.
+```
+access-list 101 permit ip 10.10.0.0 0.0.255.255 10.4.0.0 0.0.0.255
+```
+En este caso, las ips cuyo origen matchee 10.10.X.X y su destino matchee 10.4.0.X, ingresará al tunel. (Será encriptado)
+
+#### Configurar el mapa
+Este determina la IP del otro extremo y el trafico de interes que será encapsulado.
+
+| Comando                                        | Descripción                                             |
+|------------------------------------------------|---------------------------------------------------------|
+| crypto map mymap 10 ipsec-isakmp               | Crea un mapa criptografico                              |
+| set peer 10.2.0.2                              | IP del otro extremo                                     |
+| set security-association lifetime seconds 1800 | Tiempo de establecimiento de la asociación de seguridad |
+| set transform-set 50                           | Vincula el transform-set 50 creado anteriormente        |
+| match address 101                              | Vincula la lista de acceso 101 creada anteriormente     |
+
+#### Activar el tunel
+```
+[Interface] crypto map mymap
+```
+
