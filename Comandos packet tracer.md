@@ -23,11 +23,12 @@
 
 ## Output de "show interfaces"
 *Nota: show interface <interfaz> para ver solo una interfaz.*
-|Output | Explicacion |
-|-------|-------------|
-Interface is up                    | Está habilitado y tiene algo conectado
-Interface is down                  | Está habilitado y no tiene algo conectado
-Interface is administratively down | Deshabilitado. No se puede usar hasta que se habilite manualmente. Se pasa a este estado ante una violacion de seguridad donde se indique shutdown
+
+| Output                             | Explicacion                                                                                                                                        |
+|------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| Interface is up                    | Está habilitado y tiene algo conectado                                                                                                             |
+| Interface is down                  | Está habilitado y no tiene algo conectado                                                                                                          |
+| Interface is administratively down | Deshabilitado. No se puede usar hasta que se habilite manualmente. Se pasa a este estado ante una violacion de seguridad donde se indique shutdown |
 
 ## Configuraciones
 
@@ -95,7 +96,6 @@ no shutdown
 - Todos los switches involucrados deben tener configuradas las vlans para poder direccionarlas correctamente.
 - Por default todo está en la VLAN 1.
 
-
 #### Crear VLANs
 ```
 [CG] vlan <numero>
@@ -129,12 +129,14 @@ Primero activar acceso SSH en VTY 0.
 | username \<user\> privilege 15 password \<pass\> | Especificar user y pass                               |
 
 Por ultimo desactivar acceso en el resto de VTY.
-| Comando | Explicacion |
-|---------|-------------|
-line vty 1 15         | Configurar VTY 1 a 15
-transport input none  | Deshabilitar acceso remoto
+
+| Comando              | Explicacion                |
+|----------------------|----------------------------|
+| line vty 1 15        | Configurar VTY 1 a 15      |
+| transport input none | Deshabilitar acceso remoto |
 
 ### Acceso remoto TELNET
+
 | Comando                  | Explicación                      |
 |--------------------------|----------------------------------|
 | line vty 0 1             | Configurar VTY 0 y               |
