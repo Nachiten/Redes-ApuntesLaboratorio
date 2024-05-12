@@ -4,11 +4,11 @@
 | Comando             | Función                                            |
 |---------------------|----------------------------------------------------|
 | Control + Shift + 6 | Parar proceso corriendo                            |
-| Control + z         | Volver atras                                       |
+| Control + z         | Volver atrás                                       |
 | Shift + Insert      | Pegar texto copiado                                |
 | Tab                 | Autocompletar entrada                              |
 | Flecha Arriba       | Reinsertar comando anteriores                      |
-| ?                   | Obtener documentacion sobre un comando o parametro |
+| ?                   | Obtener documentación sobre un comando o parámetro |
 | exit                | Salir del modo actual, volver al anterior          |
 
 ## Modos
@@ -18,8 +18,8 @@
 |------------------------------------------|-----------------------------|-------------------------------------|
 | [U] \> Usuario                           | A penas entras, default     | -                                   |
 | [P] # Privilegiado                       | Modo privilegiado           | enable                              |
-| [CG] (config) Configuracion Global       | Configuracion general       | configure terminal                  |
-| [CE] (config-X) Configuracion Especifica | Configuraciones especificas | interface \<interfaz\>, entre otros |
+| [CG] (config) Configuración Global       | Configuración general       | configure terminal                  |
+| [CE] (config-X) Configuración Especifica | Configuraciones especificas | interface \<interfaz\>, entre otros |
 
 ## Output de "show interfaces"
 *Nota: show interface <interfaz> para ver solo una interfaz.*
@@ -190,8 +190,8 @@ Publico este prefijo, donde si una IP tiene el mismo prefijo, que me la manden p
 
 ### Crear la acess list (Entrenar el patoba)
 ```
-[CG] access-list <numAccessList> <action> <ip> <wildcard> | Estandar
-[CG] access-list <numAccessList> <action> <ipOrigen> <wildcardOrigen> <ipDestino> <wildcardDestino> | Extendida
+[CG] access-list <numAccessList> <accion> <ip> <wildcard> | Estandar
+[CG] access-list <numAccessList> <accion> <ipOrigen> <wildcardOrigen> <ipDestino> <wildcardDestino> | Extendida
 ```
 
 TODO: Googlear en que orden se establecen las access list al poner varias
@@ -200,12 +200,12 @@ numAccessList: Identificador de la access list
 - 1-99 Estandar
 - 100-199 Extendida
 
-action:
-- permit
-- deny
+accion:
+- permit | Permitir
+- deny | Denegar
 
 ip: La ip a matchear con el wildcard
-wildcard: Los bits que esten en las mismas posiones a los 0 de la wildcard, deben coincidir con esa misma posicion de la ip.
+wildcard: Los bits que estén en las mismas posiciones a los 0 de la wildcard, deben coincidir con esa misma posicion de la ip.
 
 #### Activar la access list en una interfaz (Poner al patoba a laburar)
 ```
@@ -217,7 +217,7 @@ direccion:
 - out: Paquetes que salen
 
 
-### Tunel IPsec
+### Túnel IPsec
 
 #### Configuración de VPN
 
@@ -236,7 +236,7 @@ crypto isakmp key <clave> address <ip>
 Clave: Clave pre-compartida
 IP: IP del otro extremo
 
-#### Configuracion de IPSec modo tunel
+#### Configuración de IPSec modo túnel
 ```
 crypto ipsec transform-set 50 ah-sha-hmac esp-3des
 ```
@@ -249,7 +249,7 @@ Nota: Esta lista de acceso determina que trafico se va a encriptar.
 ```
 access-list 101 permit ip 10.10.0.0 0.0.255.255 10.4.0.0 0.0.0.255
 ```
-En este caso, las ips cuyo origen matchee 10.10.X.X y su destino matchee 10.4.0.X, ingresará al tunel. (Será encriptado)
+En este caso, las ips cuyo origen matchee 10.10.X.X y su destino matchee 10.4.0.X, ingresará al túnel. (Será encriptado)
 
 #### Configurar el mapa
 Este determina la IP del otro extremo y el trafico de interes que será encapsulado.
@@ -262,7 +262,7 @@ Este determina la IP del otro extremo y el trafico de interes que será encapsul
 | set transform-set 50                           | Vincula el transform-set 50 creado anteriormente        |
 | match address 101                              | Vincula la lista de acceso 101 creada anteriormente     |
 
-#### Activar el tunel
+#### Activar el túnel
 ```
 [Interface] crypto map mymap
 ```
