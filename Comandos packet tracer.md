@@ -7,19 +7,19 @@
 | Control + z         | Volver atrás                                       |
 | Shift + Insert      | Pegar texto copiado                                |
 | Tab                 | Autocompletar entrada                              |
-| Flecha Arriba       | Reinsertar comando anteriores                      |
+| Flecha Arriba       | Reinsertar comandos anteriores                     |
 | ?                   | Obtener documentación sobre un comando o parámetro |
 | exit                | Salir del modo actual, volver al anterior          |
 
 ## Modos
 *Nota: Los modos (en general) van de menor a mayor permisos, y de menor a mayor especificidad.*
 
-| Modo                                     | Función                     | Para ingresar                       |
-|------------------------------------------|-----------------------------|-------------------------------------|
-| [U] \> Usuario                           | A penas entras, default     | -                                   |
-| [P] # Privilegiado                       | Modo privilegiado           | enable                              |
-| [CG] (config) Configuración Global       | Configuración general       | configure terminal                  |
-| [CE] (config-X) Configuración Especifica | Configuraciones especificas | interface \<interfaz\>, entre otros |
+| Modo                                     | Función                     | Para ingresar                |
+|------------------------------------------|-----------------------------|------------------------------|
+| [U] \> Usuario                           | A penas entras, default     | -                            |
+| [P] # Privilegiado                       | Modo privilegiado           | en                           |
+| [CG] (config) Configuración Global       | Configuración general       | conf t                       |
+| [CE] (config-X) Configuración Especifica | Configuraciones especificas | in \<interfaz\>, entre otros |
 
 ## Output de "show interfaces"
 *Nota: show interface <interfaz> para ver solo una interfaz.*
@@ -47,12 +47,13 @@
 ### Mostrar info
 ```
 show <cosa>
-show running-config
-show interface
-show vlan
-show access-lists
-show ip route | Tabla de IPs
-show ip protocol | Protocolo de enrutamiento
+show r | Running config
+show in | Interfaces
+show in <interfaz> | Interfaz especifica
+show v | VLANs
+show ac | Access lists
+show ip ro | Tabla de rutas
+show ip p | Protocolo de enrutamiento
 ```
 
 ### Interfaces
@@ -73,7 +74,7 @@ interface range f0/4-24
 | switchport port-security                     | Activar la seguridad del puerto                              |
 | switchport port-security maximum 1           | Numero maximo de MAC                                         |
 | switchport port-security mac-address \<mac\> | Asignar de MAC permitida                                     |
-| switchport port-security violation shutdown  | Establecer accion ante violacion. En este caso apagar puerto |
+| switchport port-security violation shutdown  | Establecer acción ante violación. En este caso apagar puerto |
 
 *Nota: Al hacer shutdown por una violation se pasa el puerto al estado administratively down.*
 
@@ -88,7 +89,7 @@ no shutdown
 | Comando                   | Explicación                                              |
 |---------------------------|----------------------------------------------------------|
 | [CG] interface serial 0/0 | Ingresar a interfaz                                      |
-| encapsulation ppp         | Configurar protocolo de encapsulacion                    |
+| encapsulation ppp         | Configurar protocolo de encapsulación                    |
 | ip address <IP> <máscara> | Configurar IP y mascara                                  |
 | clock rate 2000000        | Velocidad de reloj (SOLO en extremo DCE, icono relojito) |
 | no shutdown               | Encender interfaz                                        |
@@ -127,7 +128,7 @@ Primero activar acceso SSH en VTY 0.
 | ip ssh version 2                                 | Configurar versión de SSH                             |
 | line vty 0                                       | Configurar terminal virtual (VTY) 0                   |
 | transport input ssh                              | Configurar acceso SSH                                 |
-| login local                                      | Configurar autenticacion                              |
+| login local                                      | Configurar autenticación                              |
 | username \<user\> privilege 15 password \<pass\> | Especificar user y pass                               |
 
 Por ultimo desactivar acceso en el resto de VTY.
@@ -144,7 +145,7 @@ Por ultimo desactivar acceso en el resto de VTY.
 | line vty 0 1             | Configurar VTY 0 y               |
 | login                    | Configurar autenticación         |
 | password \<contra\>      | Establecer contraseña            |
-| exec-timeout \<minutos\> | Timeout antes de terminar sesion |
+| exec-timeout \<minutos\> | Timeout antes de terminar sesión |
 
 ### Spanning tree
 Configurar este switch como root.
@@ -168,9 +169,9 @@ channel-protocol LACP
 | version 2       | Version de RIP                                     |
 | network w.x.y.z | Especifica una red para incluirla en la tabla      |
 
-*Nota: Las network deben estar en ip **CLASSFULL**. Es decir, la direccion de red (no subred) con la mascara default.*
+*Nota: Las network deben estar en ip **CLASSFULL**. Es decir, la dirección de red (no subred) con la mascara default.*
 
-#### Evitar la publicacion de RIP en una interfaz
+#### Evitar la publicación de RIP en una interfaz
 ```
 [Router rip] passive-interface <interfaz>
 ```
@@ -181,7 +182,7 @@ channel-protocol LACP
 ```
 Publico este prefijo, donde si una IP tiene el mismo prefijo, que me la manden porque ya la manejo.
 
-#### Redistribuir rutas estaticas en el procotolo de ip dinamica
+#### Redistribuir rutas estáticas en el protocolo de ip dinámica
 ```
 [Router rip] redistribute static
 ```
@@ -205,7 +206,7 @@ accion:
 - deny | Denegar
 
 ip: La ip a matchear con el wildcard
-wildcard: Los bits que estén en las mismas posiciones a los 0 de la wildcard, deben coincidir con esa misma posicion de la ip.
+wildcard: Los bits que estén en las mismas posiciones a los 0 de la wildcard, deben coincidir con esa misma posición de la ip.
 
 #### Activar la access list en una interfaz (Poner al patoba a laburar)
 ```
@@ -219,17 +220,17 @@ direccion:
 
 ### Túnel IPsec
 
-#### Configuración de VPN
+#### Configuración de IKE (Internet Key Exchange)
 
-| Comando                      | Descripción                                          |
-|------------------------------|------------------------------------------------------|
-| [CG] crypto isakmp policy 10 | Configurar política de encriptación                  |
-| encr AES                     | Algoritmo de encriptacion                            |
-| authentication pre-share     | Metodo de autenticacion. Clave pre-compartida        |
-| group 5                      | Grupo de Diffie-Helulman. Grpo 5, clave de 1536 bits |
-| lifetime 900                 | Tiempo de vida de la clave (segundos)                |
+| Comando                      | Descripción                                           |
+|------------------------------|-------------------------------------------------------|
+| [CG] crypto isakmp policy 10 | Configurar política de encriptación                   |
+| encr AES                     | Algoritmo de encriptación                             |
+| authentication pre-share     | Método de autenticación. Clave pre-compartida         |
+| group 5                      | Grupo de Diffie-Helulman. Grupo 5, clave de 1536 bits |
+| lifetime 900                 | Tiempo de vida de la clave (segundos)                 |
 
-#### Definicion de clave simetrica con el otro extremo
+#### Definición de clave simétrica con el otro extremo
 ```
 crypto isakmp key <clave> address <ip>
 ```
@@ -240,9 +241,9 @@ IP: IP del otro extremo
 ```
 crypto ipsec transform-set 50 ah-sha-hmac esp-3des
 ```
-transform-set 50: Crea un mapa de transformacion llamado 50.
-ah-sha-hmac: Algoritmo de autenticacion
-esp-3des: Algoritmo de encriptacion
+transform-set 50: Crea un mapa de transformación llamado 50.
+ah-sha-hmac: Algoritmo de autenticación
+esp-3des: Algoritmo de encriptación
 
 #### Configurar lista de acceso
 Nota: Esta lista de acceso determina que trafico se va a encriptar.
@@ -252,11 +253,11 @@ access-list 101 permit ip 10.10.0.0 0.0.255.255 10.4.0.0 0.0.0.255
 En este caso, las ips cuyo origen matchee 10.10.X.X y su destino matchee 10.4.0.X, ingresará al túnel. (Será encriptado)
 
 #### Configurar el mapa
-Este determina la IP del otro extremo y el trafico de interes que será encapsulado.
+Este determina la IP del otro extremo y el tráfico de interés que será encapsulado.
 
 | Comando                                        | Descripción                                             |
 |------------------------------------------------|---------------------------------------------------------|
-| crypto map mymap 10 ipsec-isakmp               | Crea un mapa criptografico                              |
+| crypto map mymap 10 ipsec-isakmp               | Crea un mapa criptográfico                              |
 | set peer 10.2.0.2                              | IP del otro extremo                                     |
 | set security-association lifetime seconds 1800 | Tiempo de establecimiento de la asociación de seguridad |
 | set transform-set 50                           | Vincula el transform-set 50 creado anteriormente        |
@@ -267,3 +268,21 @@ Este determina la IP del otro extremo y el trafico de interes que será encapsul
 [Interface] crypto map mymap
 ```
 
+### Sub-interfaces
+Se utilizan para generar N interfaces virtuales en una interfaz física. Se utilizan para separar tráfico de diferentes VLANs.
+```
+[CG] interface f0/0.XX
+encapsulation dot1Q XX
+ip address <ip> <mascara>
+```
+XX = Número de VLAN
+
+### Wireless
+
+Modos del AP:
+- Router: Es un Router inalámbrico. En este modo se crea una red independiente de la red cableada, y se realizan todas las funciones de un Router a la vez que de un AP.
+- Bridge: Funciona como un puente inalámbrico. En este modo no se crea una red, se extiende la red existente. El AP reenvía los paquetes entre la red cableada y la inalámbrica, sin realizar funciones de router.
+
+### TODO
+- Como configurar el modo de router o bridge en un AP
+- Como configurar el AP con GUI en cada caso
