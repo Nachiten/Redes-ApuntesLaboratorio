@@ -195,21 +195,26 @@ Publico este prefijo, donde si una IP tiene el mismo prefijo, que me la manden p
 
 ### Crear la acess list (Entrenar el patoba)
 ```
-[CG] access-list <numAccessList> <accion> <ip> <wildcard> | Estandar
-[CG] access-list <numAccessList> <accion> <ipOrigen> <wildcardOrigen> <ipDestino> <wildcardDestino> | Extendida
+[CG] access-list <numAccessList> <accion> <origen> | Estandar
+[CG] access-list <numAccessList> <accion> <protocolo> <origen> <destino> | Extendida
 ```
-
-TODO: Googlear en que orden se establecen las access list al poner varias
 
 numAccessList: Identificador de la access list 
 - 1-99 Estandar
 - 100-199 Extendida
 
-accion:
+accion: Accion realizada si se matchea
 - permit | Permitir
 - deny | Denegar
 
-ip: La ip a matchear con el wildcard
+protocolo: Protocolo a filtrar
+- Siempre ip (en primer parcial)
+
+origen y destino: IPs a filtrar
+- host <ip> | Una ip especifica
+- any | Cualquier ip
+- \<ip> \<wildcard> | Rango de IPs
+
 wildcard: Los bits que estén en las mismas posiciones a los 0 de la wildcard, deben coincidir con esa misma posición de la ip.
 
 #### Activar la access list en una interfaz (Poner al patoba a laburar)
