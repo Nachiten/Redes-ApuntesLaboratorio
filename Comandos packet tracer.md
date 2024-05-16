@@ -20,6 +20,7 @@
 | [P] # Privilegiado                       | Modo privilegiado           | en                           |
 | [CG] (config) Configuración Global       | Configuración general       | conf t                       |
 | [CE] (config-X) Configuración Especifica | Configuraciones especificas | in \<interfaz\>, entre otros |
+*Nota: Uso los prefijos entre [X] para identificar el modo donde va cada comando.*
 
 ## Output de "show interfaces"
 *Nota: show interface <interfaz> para ver solo una interfaz.*
@@ -46,7 +47,7 @@
 
 ### Mostrar info
 ```
-show <cosa>
+[P] show <cosa>
 show r | Running config
 show in | Interfaces
 show in <interfaz> | Interfaz especifica
@@ -64,7 +65,7 @@ show ip p | Protocolo de enrutamiento
 
 #### Rango de interfaces
 ```
-interface range f0/4-24
+[P] interface range f0/4-24
 ```
 
 ### Seguridad de interfaz
@@ -107,7 +108,8 @@ name <nombre>
 
 #### Asignar un puerto a una VLAN
 ```
-[Interfaz] switchport access vlan <numVlan>
+[Interfaz] switchport mode access
+switchport access vlan <numVlan>
 ```
 
 #### Trunk
@@ -131,18 +133,20 @@ Primero activar acceso SSH en VTY 0.
 | login local                                      | Configurar autenticación                              |
 | username \<user\> privilege 15 password \<pass\> | Especificar user y pass                               |
 
+*TODO: No me dejo poner username en VTY 0, pero si en CG
+
 Por ultimo desactivar acceso en el resto de VTY.
 
 | Comando              | Explicación                |
 |----------------------|----------------------------|
-| line vty 1 15        | Configurar VTY 1 a 15      |
+| [CG] line vty 1 15   | Configurar VTY 1 a 15      |
 | transport input none | Deshabilitar acceso remoto |
 
 ### Acceso remoto TELNET
 
 | Comando                  | Explicación                      |
 |--------------------------|----------------------------------|
-| line vty 0 1             | Configurar VTY 0 y               |
+| [CG] line vty 0 1        | Configurar VTY 0 y               |
 | login                    | Configurar autenticación         |
 | password \<contra\>      | Establecer contraseña            |
 | exec-timeout \<minutos\> | Timeout antes de terminar sesión |
@@ -165,7 +169,7 @@ channel-protocol LACP
 ### Protocolo RIP
 | Comando         | Descripción                                        |
 |-----------------|----------------------------------------------------|
-| router rip      | Entra al modo de configuración del router para RIP |
+| [CG] router rip | Entra al modo de configuración del router para RIP |
 | version 2       | Version de RIP                                     |
 | network w.x.y.z | Especifica una red para incluirla en la tabla      |
 
@@ -232,23 +236,25 @@ direccion:
 
 #### Definición de clave simétrica con el otro extremo
 ```
-crypto isakmp key <clave> address <ip>
+[CG] crypto isakmp key <clave> address <ip>
 ```
-Clave: Clave pre-compartida
-IP: IP del otro extremo
+
+- Clave: Clave pre-compartida
+- IP: IP del otro extremo
 
 #### Configuración de IPSec modo túnel
 ```
-crypto ipsec transform-set 50 ah-sha-hmac esp-3des
+[CG] crypto ipsec transform-set 50 ah-sha-hmac esp-3des
 ```
-transform-set 50: Crea un mapa de transformación llamado 50.
-ah-sha-hmac: Algoritmo de autenticación
-esp-3des: Algoritmo de encriptación
+
+- transform-set 50: Crea un mapa de transformación llamado 50.
+- ah-sha-hmac: Algoritmo de autenticación
+- esp-3des: Algoritmo de encriptación
 
 #### Configurar lista de acceso
 Nota: Esta lista de acceso determina que trafico se va a encriptar.
 ```
-access-list 101 permit ip 10.10.0.0 0.0.255.255 10.4.0.0 0.0.0.255
+[CG] access-list 101 permit ip 10.10.0.0 0.0.255.255 10.4.0.0 0.0.0.255
 ```
 En este caso, las ips cuyo origen matchee 10.10.X.X y su destino matchee 10.4.0.X, ingresará al túnel. (Será encriptado)
 
@@ -258,7 +264,7 @@ Este determina la IP del otro extremo y el tráfico de interés que será encaps
 | Comando                                        | Descripción                                             |
 |------------------------------------------------|---------------------------------------------------------|
 | crypto map mymap 10 ipsec-isakmp               | Crea un mapa criptográfico                              |
-| set peer 10.2.0.2                              | IP del otro extremo                                     |
+| set peer \<ip\>                                | IP del otro extremo                                     |
 | set security-association lifetime seconds 1800 | Tiempo de establecimiento de la asociación de seguridad |
 | set transform-set 50                           | Vincula el transform-set 50 creado anteriormente        |
 | match address 101                              | Vincula la lista de acceso 101 creada anteriormente     |
@@ -279,10 +285,67 @@ XX = Número de VLAN
 
 ### Wireless
 
-Modos del AP:
+#### Modos del AP
 - Router: Es un Router inalámbrico. En este modo se crea una red independiente de la red cableada, y se realizan todas las funciones de un Router a la vez que de un AP.
 - Bridge: Funciona como un puente inalámbrico. En este modo no se crea una red, se extiende la red existente. El AP reenvía los paquetes entre la red cableada y la inalámbrica, sin realizar funciones de router.
 
+#### Modo Router
+Para conectar el AP en este modo, se debe usar su puerto WAN (Internet). En este modo, el AP genera su propia WLAN, y además se conecta con el otro router para tener acceso al resto de redes.
+
+Ejemplo:
+- RouterA usa su interfaz f0/0 para conectarse con el AP1, y el AP1 usa su interfaz Internet para conectarse con RouterA.
+- Entre RouterA y AP1 usan la red 192.168.170.0/24 para conectarse entre sí. 
+- Entonces, el RouterA tiene configurada la IP 192.168.170.254/24.
+- Ademas, el AP creará la red 192.168.180.0/24 para su WLAN
+
+Para configurar el AP, ingresar a la GUI:
+```
+**Pesataña Setup:**
+En Internet Setup:
+Connection Type -> Static IP
+IP Address: IP de este router en la red con el otro router. En este ejemplo 192.168.170.253
+Subnet Mask: Mascara de subred. En este ejemplo 255.255.255.0
+Default Gateway: IP del otro router. En este ejemplo 192.168.170.254
+
+Mas abajo en Network Setup:
+IP Adress: IP de este router en la red de la WLAN. En este ejemplo 192.168.180.1
+Subnet Mask: Mascara de subred. En este ejemplo 255.255.255.0
+Activar DHCP Server
+Elegir la IP inicial y la cantidad de usuarios(IPs) maxima
+
+**Pestaña Wireless:**
+Configurar lo que se pida sobre la red en Basic Wireless Setttings y Wireless Security
+```
+
+Luego ir a los dispositivos terminales de la WLAN y configurar la IP en DHCP y las credenciales de la red wireless.
+
+#### Modo Bridge
+Para conectar el AP en este modo, se debe usar alguno de sus puertos LAN. En este modo, el AP extiende la red LAN existente, creando su red WLAN. Actúa como un puente que conecta ambas.
+
+Ejemplo:
+- AP1 se conecta a SwitchA por su puerto LAN.
+- SwitchA es parte de una red X.
+- Entonces, el AP1 se conecta a la red X.
+- El AP1 crea su red WLAN 192.168.168.64/27
+
+Para configurar el AP, ingresar a la GUI:
+```
+**Pesataña Setup:**
+En Internet Setup:
+Connection Type -> Automatic Configuration - DHCP
+
+Mas abajo en Network Setup:
+IP Address: IP de este router en la red de la WLAN. En este ejemplo 192.168.168.65
+Subnet Mask: Mascara de subred. En este ejemplo 255.255.255.224 (/27)
+Activar DHCP Server
+Elegir la IP inicial y la cantidad de usuarios(IPs) maxima
+
+**Pestaña Wireless:**
+Configurar lo que se pida sobre la red en Basic Wireless Setttings y Wireless Security
+```
+
+Luego ir a los dispositivos terminales de la WLAN y configurar la IP en DHCP y las credenciales de la red wireless.
+
 ### TODO
-- Como configurar el modo de router o bridge en un AP
-- Como configurar el AP con GUI en cada caso
+- Aclarar forma de wildcard vs forma de host
+- Buscar tema de "any" y todo eso de las access-list
