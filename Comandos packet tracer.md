@@ -350,7 +350,3 @@ Configurar lo que se pida sobre la red en Basic Wireless Setttings y Wireless Se
 ```
 
 Luego ir a los dispositivos terminales de la WLAN y configurar la IP en DHCP y las credenciales de la red wireless.
-
-### TODO
-- Aclarar forma de wildcard vs forma de host
-- Buscar tema de "any" y todo eso de las access-list
