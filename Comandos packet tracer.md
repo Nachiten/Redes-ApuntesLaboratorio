@@ -22,15 +22,6 @@
 | [CE] (config-X) Configuración Especifica | Configuraciones especificas | in \<interfaz\>, entre otros |
 *Nota: Uso los prefijos entre [X] para identificar el modo donde va cada comando.*
 
-## Output de "show interfaces"
-*Nota: show interface <interfaz> para ver solo una interfaz.*
-
-| Output                             | Explicación                                                        |
-|------------------------------------|--------------------------------------------------------------------|
-| Interface is up                    | Está habilitado y tiene algo conectado                             |
-| Interface is down                  | Está habilitado y no tiene algo conectado                          |
-| Interface is administratively down | Deshabilitado. No se puede usar hasta que se habilite manualmente. |
-
 ## Configuraciones
 
 ### Nombre
@@ -43,37 +34,39 @@
 [CG] enable password <contra>
 ```
 
-### 
-
 ### Mostrar info
 ```
 [P] show <cosa>
-show r | Running config
-show in | Interfaces
+show r             | Running config
+show in            | Interfaces
 show in <interfaz> | Interfaz especifica
-show v | VLANs
-show ac | Access lists
-show ip ro | Tabla de rutas
-show ip p | Protocolo de enrutamiento
+show v             | VLANs
+show ac            | Access lists
+show ip ro         | Tabla de rutas
+show ip p          | Protocolo de enrutamiento
 ```
 
 ### Interfaces
-#### Interfaz especifica
 ```
-[P] interface f 0/0
+[P] interface f 0/0         | Interfaz especifica
+[P] interface range f0/4-24 | Rango de interfaces
 ```
 
-#### Rango de interfaces
-```
-[P] interface range f0/4-24
-```
+#### Output de "show interfaces"
+*Nota: show interface <interfaz> para ver solo una interfaz.*
+
+| Output                             | Explicación                                                        |
+|------------------------------------|--------------------------------------------------------------------|
+| Interface is up                    | Está habilitado y tiene algo conectado                             |
+| Interface is down                  | Está habilitado y no tiene algo conectado                          |
+| Interface is administratively down | Deshabilitado. No se puede usar hasta que se habilite manualmente. |
 
 ### Seguridad de interfaz
 | Comando                                      | Explicación                                                  |
 |----------------------------------------------|--------------------------------------------------------------|
 | [Interfaz] switchport mode access            | Configurar puerto en modo acceso                             |
 | switchport port-security                     | Activar la seguridad del puerto                              |
-| switchport port-security maximum 1           | Numero maximo de MAC                                         |
+| switchport port-security maximum 1           | Numero máximo de MAC                                         |
 | switchport port-security mac-address \<mac\> | Asignar de MAC permitida                                     |
 | switchport port-security violation shutdown  | Establecer acción ante violación. En este caso apagar puerto |
 
@@ -81,9 +74,9 @@ show ip p | Protocolo de enrutamiento
 
 ### IP administrativa
 ```
-[CG] interface vlan 1
-ip address <ip> <mascara>
-no shutdown
+[CG] interface vlan 1     | Es la vlan por defecto
+ip address <ip> <mascara> | Configurar IP y mascara
+no shutdown               | Encender interfaz
 ```
 
 ### Interfaz serial
@@ -96,8 +89,10 @@ no shutdown
 | no shutdown               | Encender interfaz                                        |
 
 ### VLANs
+
 *Notas:*
-- Todos los switches involucrados deben tener configuradas las vlans para poder direccionarlas correctamente.
+
+- Todos los switches involucrados deben tener configuradas las VLANs para poder direccionarlas correctamente.
 - Por default todo está en la VLAN 1.
 
 #### Crear VLANs
@@ -118,24 +113,23 @@ switchport access vlan <numVlan>
 ```
 
 ### Acceso remoto SSH
-*Notas:*
-- Existen 16 VTYs (Virtual Terminal). Desde 0 hasta 15.
+*Notas: Existen 16 VTYs (Virtual Terminal). Desde 0 hasta 15.*
 
-Primero activar acceso SSH en VTY 0.
+Primero, activar acceso SSH en VTY 0.
 
-| Comando                                          | Explicación                                           |
-|--------------------------------------------------|-------------------------------------------------------|
-| [CG] ip domain-name dominio.com                  | Configurar nombre de dominio                          |
-| crypto key generate rsa                          | Generar claves RSA (Se debe usar 1024, no el default) |
-| ip ssh version 2                                 | Configurar versión de SSH                             |
-| line vty 0                                       | Configurar terminal virtual (VTY) 0                   |
-| transport input ssh                              | Configurar acceso SSH                                 |
-| login local                                      | Configurar autenticación                              |
-| username \<user\> privilege 15 password \<pass\> | Especificar user y pass                               |
+| Comando                                               | Explicación                                           |
+|-------------------------------------------------------|-------------------------------------------------------|
+| [CG] ip domain-name dominio.com                       | Configurar nombre de dominio                          |
+| crypto key generate rsa                               | Generar claves RSA (Se debe usar 1024, no el default) |
+| ip ssh version 2                                      | Configurar versión de SSH                             |
+| line vty 0                                            | Configurar terminal virtual (VTY) 0                   |
+| transport input ssh                                   | Configurar acceso SSH                                 |
+| login local                                           | Configurar autenticación                              |
+| [CG] username \<user\> privilege 15 password \<pass\> | Especificar user y pass                               |
 
 *TODO: No me dejo poner username en VTY 0, pero si en CG
 
-Por ultimo desactivar acceso en el resto de VTY.
+Por último, desactivar acceso en el resto de VTY.
 
 | Comando              | Explicación                |
 |----------------------|----------------------------|
@@ -158,7 +152,7 @@ Configurar este switch como root.
 ```
 
 ### Enlace LACP
-Este es un enlace que une dos puertos fisicos logicamente como si fueran el mismo. Esto se usa para evitar que spanning tree corte un bucle. Esto permite duplicar el ancho de banda de una conexion utilizando dos puertos a la vez.
+Este es un enlace que une dos puertos físicos lógicamente como si fueran el mismo. Esto se usa para evitar que spanning tree corte un bucle. Esto permite duplicar el ancho de banda de una conexion utilizando dos puertos a la vez.
 ```
 port-channel load-balance {dst-mac | src-mac}
 interface gigabitethernet 1/1
@@ -203,12 +197,12 @@ numAccessList: Identificador de la access list
 - 1-99 Estandar
 - 100-199 Extendida
 
-accion: Accion realizada si se matchea
+accion: Acción realizada si se matchea
 - permit | Permitir
 - deny | Denegar
 
 protocolo: Protocolo a filtrar
-- Siempre ip (en primer parcial)
+- ip (siempre se usa ese, en primer parcial)
 
 origen y destino: IPs a filtrar
 - host <ip> | Una ip especifica
@@ -231,37 +225,38 @@ direccion:
 
 #### Configuración de IKE (Internet Key Exchange)
 
-| Comando                      | Descripción                                           |
-|------------------------------|-------------------------------------------------------|
-| [CG] crypto isakmp policy 10 | Configurar política de encriptación                   |
-| encr AES                     | Algoritmo de encriptación                             |
-| authentication pre-share     | Método de autenticación. Clave pre-compartida         |
-| group 5                      | Grupo de Diffie-Helulman. Grupo 5, clave de 1536 bits |
-| lifetime 900                 | Tiempo de vida de la clave (segundos)                 |
+| Comando                         | Descripción                                           |
+|---------------------------------|-------------------------------------------------------|
+| [CG] crypto isakmp policy \<id> | Configurar política de encriptación                   |
+| encr AES                        | Algoritmo de encriptación                             |
+| authentication pre-share        | Método de autenticación. Clave pre-compartida         |
+| group 5                         | Grupo de Diffie-Helulman. Grupo 5, clave de 1536 bits |
+| lifetime 900                    | Tiempo de vida de la clave (segundos)                 |
 
 #### Definición de clave simétrica con el otro extremo
 ```
 [CG] crypto isakmp key <clave> address <ip>
 ```
 
-- Clave: Clave pre-compartida
-- IP: IP del otro extremo
+- clave: Clave pre-compartida
+- ip: IP del otro extremo
 
 #### Configuración de IPSec modo túnel
 ```
-[CG] crypto ipsec transform-set 50 ah-sha-hmac esp-3des
+[CG] crypto ipsec transform-set <id> ah-sha-hmac esp-3des
 ```
 
-- transform-set 50: Crea un mapa de transformación llamado 50.
+- transform-set: Crea un mapa de transformación
+- id: Identificador del transform-set. Debe ser único
 - ah-sha-hmac: Algoritmo de autenticación
 - esp-3des: Algoritmo de encriptación
 
 #### Configurar lista de acceso
 Nota: Esta lista de acceso determina que trafico se va a encriptar.
 ```
-[CG] access-list 101 permit ip 10.10.0.0 0.0.255.255 10.4.0.0 0.0.0.255
+[CG] access-list <id> permit ip 10.10.0.0 0.0.255.255 10.4.0.0 0.0.0.255
 ```
-En este caso, las ips cuyo origen matchee 10.10.X.X y su destino matchee 10.4.0.X, ingresará al túnel. (Será encriptado)
+En este ejemplo, las ips cuyo origen matchee 10.10.X.X y su destino matchee 10.4.0.X, ingresará al túnel. (Será encriptado)
 
 #### Configurar el mapa
 Este determina la IP del otro extremo y el tráfico de interés que será encapsulado.
@@ -271,8 +266,8 @@ Este determina la IP del otro extremo y el tráfico de interés que será encaps
 | crypto map mymap 10 ipsec-isakmp               | Crea un mapa criptográfico                              |
 | set peer \<ip\>                                | IP del otro extremo                                     |
 | set security-association lifetime seconds 1800 | Tiempo de establecimiento de la asociación de seguridad |
-| set transform-set 50                           | Vincula el transform-set 50 creado anteriormente        |
-| match address 101                              | Vincula la lista de acceso 101 creada anteriormente     |
+| set transform-set \<idTransformSet>            | Vincula el transform-set 50 creado anteriormente        |
+| match address \<idAccessList>                  | Vincula la lista de acceso 101 creada anteriormente     |
 
 #### Activar el túnel
 ```
