@@ -222,20 +222,26 @@ direccion:
 
 
 ### Túnel IPsec
+Primero, definir (y anotar) estos datos:
+- idCryptoPolicy
+- idTransformSet
+- idAccessList
+- nombreMapa
+- claveSimetrica
 
 #### Configuración de IKE (Internet Key Exchange)
 
-| Comando                         | Descripción                                           |
-|---------------------------------|-------------------------------------------------------|
-| [CG] crypto isakmp policy \<id> | Configurar política de encriptación                   |
-| encr AES                        | Algoritmo de encriptación                             |
-| authentication pre-share        | Método de autenticación. Clave pre-compartida         |
-| group 5                         | Grupo de Diffie-Helulman. Grupo 5, clave de 1536 bits |
-| lifetime 900                    | Tiempo de vida de la clave (segundos)                 |
+| Comando                                     | Descripción                                           |
+|---------------------------------------------|-------------------------------------------------------|
+| [CG] crypto isakmp policy \<idCryptoPolicy> | Configurar política de encriptación                   |
+| encr AES                                    | Algoritmo de encriptación                             |
+| authentication pre-share                    | Método de autenticación. Clave pre-compartida         |
+| group 5                                     | Grupo de Diffie-Helulman. Grupo 5, clave de 1536 bits |
+| lifetime 900                                | Tiempo de vida de la clave (segundos)                 |
 
 #### Definición de clave simétrica con el otro extremo
 ```
-[CG] crypto isakmp key <clave> address <ip>
+[CG] crypto isakmp key <claveSimetrica> address <ip>
 ```
 
 - clave: Clave pre-compartida
@@ -243,7 +249,7 @@ direccion:
 
 #### Configuración de IPSec modo túnel
 ```
-[CG] crypto ipsec transform-set <id> ah-sha-hmac esp-3des
+[CG] crypto ipsec transform-set <idTransformSet> ah-sha-hmac esp-3des
 ```
 
 - transform-set: Crea un mapa de transformación
@@ -254,22 +260,22 @@ direccion:
 #### Configurar lista de acceso
 Nota: Esta lista de acceso determina que trafico se va a encriptar.
 ```
-[CG] access-list <id> permit ip 10.10.0.0 0.0.255.255 10.4.0.0 0.0.0.255
+[CG] access-list <idAccessList> permit ip 10.10.0.0 0.0.255.255 10.4.0.0 0.0.0.255
 ```
 En este ejemplo, las ips cuyo origen matchee 10.10.X.X y su destino matchee 10.4.0.X, ingresará al túnel. (Será encriptado)
 
 #### Configurar el mapa
 Este determina la IP del otro extremo y el tráfico de interés que será encapsulado.
 
-| Comando                                        | Descripción                                             |
-|------------------------------------------------|---------------------------------------------------------|
-| crypto map mymap 10 ipsec-isakmp               | Crea un mapa criptográfico                              |
-| set peer \<ip\>                                | IP del otro extremo                                     |
-| set security-association lifetime seconds 1800 | Tiempo de establecimiento de la asociación de seguridad |
-| set transform-set \<idTransformSet>            | Vincula el transform-set 50 creado anteriormente        |
-| match address \<idAccessList>                  | Vincula la lista de acceso 101 creada anteriormente     |
+| Comando                                                 | Descripción                                             |
+|---------------------------------------------------------|---------------------------------------------------------|
+| crypto map \<nombreMapa> \<idCryptoPolicy> ipsec-isakmp | Crea un mapa criptográfico                              |
+| set peer \<ip\>                                         | IP del otro extremo                                     |
+| set security-association lifetime seconds 1800          | Tiempo de establecimiento de la asociación de seguridad |
+| set transform-set \<idTransformSet>                     | Vincula el transform-set 50 creado anteriormente        |
+| match address \<idAccessList>                           | Vincula la lista de acceso 101 creada anteriormente     |
 
-#### Activar el túnel
+#### Activar el túnel (Poner el patoba IPsec a trabajar)
 ```
 [Interface] crypto map mymap
 ```
