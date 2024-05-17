@@ -127,8 +127,6 @@ Primero, activar acceso SSH en VTY 0.
 | login local                                           | Configurar autenticación                              |
 | [CG] username \<user\> privilege 15 password \<pass\> | Especificar user y pass                               |
 
-*TODO: No me dejo poner username en VTY 0, pero si en CG
-
 Por último, desactivar acceso en el resto de VTY.
 
 | Comando              | Explicación                |
