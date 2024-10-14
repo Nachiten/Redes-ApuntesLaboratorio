@@ -253,7 +253,7 @@ Primero, definir (y anotar) estos datos:
 - idAccessList (numero)
 - nombreMapa (string)
 - claveSimetrica (string)
-#### 1) Configuración de IKE (Internet Key Exchange)
+#### 1) Configurar el IKE (Internet Key Exchange)
 
 | Comando                                    | Descripción                                           |
 | ------------------------------------------ | ----------------------------------------------------- |
@@ -262,14 +262,14 @@ Primero, definir (y anotar) estos datos:
 | authentication pre-share                   | Método de autenticación. Clave pre-compartida         |
 | group 5                                    | Grupo de Diffie-Helulman. Grupo 5, clave de 1536 bits |
 | lifetime 900                               | Tiempo de vida de la clave (segundos)                 |
-#### 2) Definición de clave simétrica con el otro extremo
+#### 2) Definir la clave simétrica con el otro extremo
 ```
 [CG] crypto isakmp key [claveSimetrica] address [ip]
 ```
 
 - claveSimetrica: Clave pre-compartida
 - ip: IP del otro extremo
-#### 3) Configuración de IPSec modo túnel
+#### 3) Configurar el IPSec modo túnel
 ```
 [CG] crypto ipsec transform-set [idTransformSet] ah-sha-hmac esp-3des
 ```
@@ -277,7 +277,7 @@ Primero, definir (y anotar) estos datos:
 - idTransformSet: Identificador del transform-set. Debe ser único
 - ah-sha-hmac: Algoritmo de autenticación
 - esp-3des: Algoritmo de encriptación
-#### 4) Configurar lista de acceso
+#### 4) Configurar la lista de acceso
 Nota: Esta lista de acceso determina que trafico se va a encriptar.
 ```
 [CG] access-list [idAccessList] permit ip [ipOrigen] [wildcardOrigen] [ipDestino] [wildcardDestino]
@@ -306,7 +306,7 @@ Este determina la IP del otro extremo y el tráfico de interés que será encaps
 Nota: Recordar aplicar esta config en AMBOS extremos del tunel. Donde la UNICAS diferencias deben ser:
 - Las access list deben estar al reves el origen y el destino.
 - El "set peer" debe apuntar al OTRO extremo.
-- El "crypto isakmp" debe apuntar al OTRO extremo.
+- El "crypto isakmp key" debe apuntar al OTRO extremo.
 ### Wireless
 #### Modos del AP
 - Router: Es un Router inalámbrico. En este modo se crea una red independiente de la red cableada, y se realizan todas las funciones de un Router a la vez que de un AP.
