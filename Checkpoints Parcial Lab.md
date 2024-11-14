@@ -1,8 +1,8 @@
 ---
-modifiedDate: 2024-10-25T11:15:22-03:00
+modifiedDate: 2024-11-14T17:37:46-03:00
 createdDate: 2024-10-14T16:46:12-03:00
 ---
-Una orientación macro de todos los objetivos que se deben cumplir para completar el examen de laboratorio.
+Una orientación macro de todos los objetivos necesarios para el primer parcial de laboratorio.
 ## Checkpoint 1: VLANs
 Resolver:
 - Conectar cada Terminal a los switches, y los switches entre si.

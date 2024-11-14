@@ -1,8 +1,8 @@
 ---
 createdDate: 2024-09-06T19:29:31-03:00
-modifiedDate: 2024-10-25T11:12:19-03:00
+modifiedDate: 2024-11-14T17:37:40-03:00
 ---
-Apunte con todo lo necesario para rendir el parcial de laboratorio.
+Apunte con todo lo necesario para rendir el primera parcial de laboratorio con Packet Tracer.
 ## Utilidades
 
 | Comando             | Función                                            |
@@ -183,7 +183,7 @@ En la config de eigrp:
 [CG] access-list [idAccessList] [accion] [origen] | Estandar
 [CG] access-list [idAccessList] [accion] [protocolo] [origen] [destino] | Extendida
 ```
-idAccessList: Identificador de la access list
+idAccessList: Identificador de la access list 
 - 1-99 Estandar
 - 100-199 Extendida
 
@@ -222,7 +222,7 @@ Una vez configuradas las subinterfaces, se puede acceder entre las difernetes VL
 #### Crear access list
 Se debe pensar en toda la combinatoria de accesos que se pueden producir entre las diferentes VLANs.
 
-Ejemplo:
+Ejemplo: 
 Para las siguientes VLANs:
 - 192.168.170.0/27
 - 192.168.180.0/27
@@ -327,7 +327,7 @@ En ambos casos se usa cable cruzado para conectar el AP.
 
 Ejemplo:
 - RouterA usa su interfaz f0/0 para conectarse con el AP1, y el AP1 usa su interfaz Internet para conectarse con RouterA.
-- Entre RouterA y AP1 usan la red 192.168.170.0/24 para conectarse entre sí.
+- Entre RouterA y AP1 usan la red 192.168.170.0/24 para conectarse entre sí. 
 - Entonces, el RouterA tiene configurada la IP 192.168.170.254/24 en f0/0. AP1 tiene la IP 192.168.170.253/24 en su interfaz Internet.
 - Ademas, el AP creará la red 192.168.180.0/24 para su WLAN
 
@@ -394,7 +394,7 @@ Entonces, para solucionar esto, se debe asignar la IP de forma manual de los ter
 - El AP tiene IP 192.168.170.3/27
 - El AP asigna las IPs 192.168.170.4-14
 
-Existen dos celulares conectados a este AP, cuando se usa DHCP, sus configs quedan automaticamente de la siguiente forma:
+Existen dos celulares conectados a este AP, cuando se usa DHCP, sus configs quedan automáticamente de la siguiente forma:
 
 Celu 1:
 - IP: 192.168.170.4
@@ -406,7 +406,7 @@ Celu 2:
 - Mask: 255.255.255.224
 - Default Gateway: 192.168.170.3
 
-Para fijar el default gateway, se debe cambiar la opcion de DHCP a Static, y dejar los dispositivos de la siguiente forma:
+Para fijar el default gateway, se debe cambiar la opción de DHCP a Static, y dejar los dispositivos de la siguiente forma:
 
 Celu 1:
 - IP: 192.168.170.4
